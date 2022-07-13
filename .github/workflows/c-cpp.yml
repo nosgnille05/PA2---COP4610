@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      run: ./Makefile
+      run: .github/configure
     - name: make
       run: make
     - name: make check
