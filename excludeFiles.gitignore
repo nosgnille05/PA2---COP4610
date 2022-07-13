@@ -10,4 +10,5 @@
 .ccls-cache
 .vscode
 .vscode/*
-.github
+.github/
+.github/*
