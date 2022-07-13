@@ -7,6 +7,6 @@
 .breakpoints
 .replit
 #Ignored cache directories
-.ccls-cache/
-.vscode/
-.github/
+.ccls-cache
+.vscode
+.github
