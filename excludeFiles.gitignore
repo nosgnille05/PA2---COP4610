@@ -9,3 +9,4 @@
 #Ignored cache directories
 .ccls-cache/
 .vscode/
+.github/
