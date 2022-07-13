@@ -4,6 +4,7 @@
 .o
 .nix
 .file
+.breakpoints
 #Ignored cache directories
 .ccls-cache/
 .vscode/
