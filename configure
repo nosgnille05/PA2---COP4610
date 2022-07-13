@@ -1,7 +1,7 @@
 main: main.o
     make main.o -o main
 main.o: main.c
-    make -c main.c
+    make main.c
 
 
 target: dependencies
