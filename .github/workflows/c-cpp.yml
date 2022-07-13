@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      run: .github/configure
+      run: .github/workflows/configure
     - name: make
       run: make
     - name: make check
