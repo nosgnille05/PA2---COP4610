@@ -1,8 +1,3 @@
-main: main.o
-    make main.o -o main
-main.o: main.c
-    make main.c
-
-
-target: dependencies
-    action
+all:
+    cc * -o main
+    ./main
