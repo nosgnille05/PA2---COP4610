@@ -1,0 +1,9 @@
+#Ignore file types
+.exe
+.d
+.o
+.nix
+.file
+#Ignored cache directories
+.ccls-cache/
+.vscode/
