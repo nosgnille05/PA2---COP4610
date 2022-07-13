@@ -12,3 +12,5 @@
 .vscode/*
 .github/
 .github/*
+#Ignore files
+configure
