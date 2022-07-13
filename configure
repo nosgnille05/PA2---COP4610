@@ -1,2 +1,3 @@
 all: main
-    gcc *.c -o main
+    gcc -C
+    gcc *.o -o main
