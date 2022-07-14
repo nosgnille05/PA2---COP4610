@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
@@ -118,5 +118,90 @@ int main(int argc, char** argv) {
     release(blocks,&block_count,mem);
   }
   printf("avg utilization is %.3f", avg_utilization);
+  return 0;
+}*/
+#include <stdio.h>
+
+int main(void) 
+{
+  int memory1[] = {-3,19,19,1,-3,2,1,1,2,4,1,1,1,1,4,2,1,1,2,-3,0,0,1,-3};//Both Blocks (CASE 1)
+  int memory2[] = {-3,15,15,1,-3,2,1,1,2,4,1,1,1,1,4,-2,0,0,-2,3,1,1,1,3};//Right Hole (CASE 2)
+  int memory3[] = {3,1,1,1,3,-2,19,19,-2,4,1,1,1,1,4,2,1,1,2,-3,5,5,1,-3};//Left Hole (CASE 3)
+  int memory4[] = {3,1,1,1,3,-2,15,15,-2,4,1,1,1,1,4,-2,5,5,-2,3,1,1,1,3};//Left & Right Holes (CASE 4)
+  int block_start_index = 9;
+  int hole_start_index;
+  int *memory = memory4;
+
+  //Print Initial Array
+  for (int i=0; i<24; i++){
+    printf("%d ", memory[i]);
+  }
+  printf("\n");
+
+  //Determine Block Removal Case
+  if((memory[block_start_index-1]) < 0 && memory[block_start_index + (memory[block_start_index] + 2)] < 0)  {
+    printf("Left & Right Holes (CASE 4)\n");
+    hole_start_index = block_start_index + memory[block_start_index-1]-2;//index 5
+    memory[hole_start_index] = -1 * (memory[block_start_index] + 2 + (-1*(memory[block_start_index-1]-1)) + (-1*(memory[block_start_index + (memory[block_start_index] + 2)]-1))); //start
+    int hole_end_index = block_start_index + (memory[block_start_index]+2) + (-1*(memory[block_start_index-1]-2)-1); 
+    int initial_end_hole_index = memory[hole_end_index];
+    
+    memory[hole_end_index] = memory[hole_start_index]; //end
+    memory[hole_start_index + 1] = memory[hole_end_index + initial_end_hole_index]; //prev
+    memory[hole_start_index + 2] = memory[hole_end_index + initial_end_hole_index +1]; //next
+    //Clearing previous block and hole data
+    int initial_block_size = memory[block_start_index];
+    //printf("initial block size %d\n", initial_block_size);
+    memory[block_start_index] = 1;
+    memory[block_start_index-1] = 1;
+    memory[block_start_index + initial_block_size + 1] = 1;
+    memory[block_start_index + initial_block_size + 2] = 1;
+    memory[block_start_index + initial_block_size + 3] = 1;
+    memory[block_start_index + initial_block_size + 4] = 1;  
+  }
+  else if(memory[block_start_index-1] < 0)
+  {
+    printf("Left Hole (CASE 3)\n");
+    hole_start_index = block_start_index + memory[block_start_index-1] -2;
+    memory[hole_start_index] = memory[block_start_index + (memory[block_start_index] + 1)] =  memory[hole_start_index] - memory[block_start_index] - 2;
+  }
+  else if(memory[block_start_index + (memory[block_start_index] + 2)] < 0)
+  {
+    printf("Right Hole (CASE 2)\n");
+  }
+  else
+  {
+    printf("Both Blocks (CASE 1)\n");
+    hole_start_index = block_start_index;
+    memory[hole_start_index] = -1 * (memory[block_start_index] + 2); //start
+    memory[hole_start_index + (-1*memory[block_start_index]) - 1] = memory[hole_start_index]; //end
+      int negCount = 0, indexciesToNextHole = 0;
+      while (negCount < 3){
+        if (memory[hole_start_index + indexciesToNextHole] < 0)
+          negCount++;
+        indexciesToNextHole++;//indexciesToNextHole = 11 (CASE 1)
+        } 
+    memory[hole_start_index + 1] = memory[hole_start_index + indexciesToNextHole]; //prev
+    int next_hole_prev_index = hole_start_index + indexciesToNextHole;
+    
+      negCount = 0;
+      int indexciesToPrevHole = 0;
+      while (negCount < 2){
+        if (memory[hole_start_index - indexciesToPrevHole] < 0)
+          negCount++;
+        indexciesToPrevHole--;//indexciesToPrevHole = -6 (CASE 1)
+        } 
+    memory[hole_start_index + 2] = memory[hole_start_index + indexciesToPrevHole + 1 + (memory[hole_start_index + indexciesToPrevHole + 1])]; //next
+    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (memory[hole_start_index +  indexciesToPrevHole + 1]);
+    memory[next_hole_prev_index] = hole_start_index; //next hole previous 
+    memory[prev_hole_next_index] = hole_start_index; //previous hole next
+  }
+
+  //Print Array After Block Removal
+  for (int i=0; i<24; i++){
+    printf("%d ", memory[i]);
+  }
+  printf("\n");
+
   return 0;
 }
