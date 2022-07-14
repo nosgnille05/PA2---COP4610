@@ -133,12 +133,12 @@ void release(int* blocks, int* block_count, int* mem){
     //Clearing previous block and hole data
     int initial_block_size = blocks[to_be_released];
     //printf("initial block size %d\n", initial_block_size);
-    //blocks[to_be_released] = 1;
-    //blocks[to_be_released-1] = 1;
-    //blocks[to_be_released + initial_block_size + 1] = 1;
-    //blocks[to_be_released + initial_block_size + 2] = 1;
-    //blocks[to_be_released + initial_block_size + 3] = 1;
-    //blocks[to_be_released + initial_block_size + 4] = 1;  
+    blocks[to_be_released] = 0;
+    blocks[to_be_released-1] = 0;
+    blocks[to_be_released + initial_block_size + 1] = 0;
+    blocks[to_be_released + initial_block_size + 2] = 0;
+    blocks[to_be_released + initial_block_size + 3] = 0;
+    blocks[to_be_released + initial_block_size + 4] = 0;  
   }
   else if(blocks[to_be_released-1] < 0)
   {
@@ -149,6 +149,14 @@ void release(int* blocks, int* block_count, int* mem){
   else if(blocks[to_be_released + (blocks[to_be_released] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
+    hole_start_index = to_be_released + blocks[to_be_released] + 2; // Grab the index of the hole
+    blocks[to_be_released+ (blocks[to_be_released] + 1)] = 0; // remove the right size delimiter from the block
+    blocks[to_be_released] = blocks[hole_start_index] - blocks[to_be_released] - 2; //Resize left block size with plus the hole size
+    blocks[hole_start_index + -blocks[hole_start_index]+1] = blocks[to_be_released]; // replace the right size delimiter from the hole with block size+hole size
+    blocks[hole_start_index] = 0; // remove the left size delimiter from the old hole
+    blocks[to_be_released+1] = blocks[hole_start_index+1]; // replace Next control point of block of hole with hole control point
+    blocks[to_be_released+2] = blocks[hole_start_index+2]; // replace Right control point of block of hole with hole control point
+
   }
   else
   {
