@@ -25,7 +25,56 @@ int nrand_gen(int d, double v, int n){
     return rv;
   
 }
-int request(int* blocks, int* block_count, int* mem, int d, double v, int n){
+int request_best_fit(int* blocks, int* block_count, int* mem, int d, double v, int n){
+  if(head == -1)//no hole is found!
+    return 0;
+  int size = nrand_gen(d, v, n);
+  int iterator = head, pred, succ, new_size, block_address;
+  while(size > -mem[iterator]){
+    number_of_examined_holes++;
+    iterator = mem[iterator + 2];//iterator = iterator->next
+    if(head == iterator)
+      return 0;//unsuccessful
+  }
+  int small = iterator;
+  do{
+    number_of_examined_holes++;
+    if (mem[iterator] > mem[small] && size < -mem[iterator])
+      small = iterator;
+    iterator = mem[iterator + 2];//iterator = iterator->next
+  }while(iterator != head);
+
+  iterator = small;
+  
+  if(abs(size+mem[iterator]) <= 4){//fill completely
+    //request size is almost equal to the hole size
+    size = -mem[iterator];//block fills hole completely
+    mem[iterator] = mem[iterator + size + 1] = size;
+    //delete the current hole since it is full now
+    pred = mem[iterator+1];
+    succ = mem[iterator+2];
+    if (pred == iterator)//current hole is the only hole
+      head = -1;
+    else{
+      mem[pred+2] = succ;//current->prev->next = current->next
+      mem[succ+1] = pred;//current->next->prev = current->prev 
+    }
+    block_address = iterator;
+  }else{//fill partially
+    mem[iterator] += (size+2);
+    //adding pos by neg to make it less negative
+    new_size = -mem[iterator];
+    mem[iterator + new_size + 1] = mem[iterator];
+    //block starts at iterator + new_size + 2
+    block_address = iterator + new_size + 2;
+    mem[block_address] = 
+      mem[block_address + size + 1] = size;
+  }
+  blocks[*block_count] = block_address;
+  (*block_count)++;
+  return 1;//successful
+}
+int request_first_fit(int* blocks, int* block_count, int* mem, int d, double v, int n){
   if(head == -1)//no hole is found!
     return 0;
   int size = nrand_gen(d, v, n);
@@ -172,7 +221,7 @@ int main(int argc, char** argv) {
   initialize(n, d, v, &mem, &blocks);
   while(x > 0){
     x--;
-    while(request(blocks, &block_count, mem, d, v, n));
+    while(request_first_fit(blocks, &block_count, mem, d, v, n));
     update_memory_utilization(blocks, block_count, mem, n, x);
     release(blocks,&block_count,mem);
   }
