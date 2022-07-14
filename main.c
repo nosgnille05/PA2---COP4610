@@ -149,6 +149,8 @@ void release(int* blocks, int* block_count, int* mem){
   else if(blocks[to_be_released + (blocks[to_be_released] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
+    hole_start_index = block_start_index + memory[block_start_index] + 1;
+    memory[hole_start_index] = memory[block_start_index + (memory[block_start_index] + 1)] =  memory[hole_start_index] - memory[block_start_index] - 2;
   }
   else
   {
