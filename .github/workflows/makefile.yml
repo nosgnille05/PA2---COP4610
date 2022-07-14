@@ -10,13 +10,13 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
     
     - name: Compilation & Build
-      run: ./configure
+      run: gcc *.c -lm -o main
       
     - name: Listing if file compiled correctly
       if: always()
@@ -24,7 +24,7 @@ jobs:
     
     - name: Testing with Set 1 parameters
       if: always()
-      run: ./main -x1000 -n16777216 -d1048576 -v262144
+      run: ./main -x 1000 -n 16777216 -d 1048576 -v 262144
       
     - name: Testing with Set 2 parameters
       if: always()
