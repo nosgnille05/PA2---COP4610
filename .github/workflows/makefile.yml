@@ -1,6 +1,7 @@
-name: Makefile CI
+name: Automatic Unit Testing
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
   pull_request:
