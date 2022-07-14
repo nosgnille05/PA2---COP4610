@@ -13,9 +13,9 @@ Compare the performance of the memory allocation strategies first-fit, next-fit,
 # Assigned Tasks:
 
 ---
-- Tanner: Worst-Fit, Release Function
-- Lisa Shrestha: Best-fit
-- Gilbert Gomez: Next-fit
+- Tanner: Worst-Fit, Release Function Case 1 & 4
+- Lisa Shrestha: Best-fit, Release Function Case 3
+- Gilbert Gomez: Next-fit, Release Function Case 2
 ---
 
 # Meeting Dates:
