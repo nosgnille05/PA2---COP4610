@@ -118,7 +118,66 @@ void release(int* blocks, int* block_count, int* mem){
     return;
   int to_be_released = rand()%(*block_count);
   printf("releasing block at location (address) %d\n", blocks[to_be_released]);
-
+  //Here To...
+  int hole_start_index;
+  if((blocks[to_be_released-1]) < 0 && blocks[to_be_released + (blocks[to_be_released] + 2)] < 0)  {
+    printf("Left & Right Holes (CASE 4)\n");
+    hole_start_index = to_be_released + blocks[to_be_released-1]-2;//index 5
+    blocks[hole_start_index] = -1 * (blocks[to_be_released] + 2 + (-1*(blocks[to_be_released-1]-1)) + (-1*(blocks[to_be_released + (blocks[to_be_released] + 2)]-1))); //start
+    int hole_end_index = to_be_released + (blocks[to_be_released]+2) + (-1*(blocks[to_be_released-1]-2)-1); 
+    int initial_end_hole_index = blocks[hole_end_index];
+    
+    blocks[hole_end_index] = blocks[hole_start_index]; //end
+    blocks[hole_start_index + 1] = blocks[hole_end_index + initial_end_hole_index]; //prev
+    blocks[hole_start_index + 2] = blocks[hole_end_index + initial_end_hole_index +1]; //next
+    //Clearing previous block and hole data
+    int initial_block_size = blocks[to_be_released];
+    //printf("initial block size %d\n", initial_block_size);
+    //blocks[to_be_released] = 1;
+    //blocks[to_be_released-1] = 1;
+    //blocks[to_be_released + initial_block_size + 1] = 1;
+    //blocks[to_be_released + initial_block_size + 2] = 1;
+    //blocks[to_be_released + initial_block_size + 3] = 1;
+    //blocks[to_be_released + initial_block_size + 4] = 1;  
+  }
+  else if(blocks[to_be_released-1] < 0)
+  {
+    printf("Left Hole (CASE 3)\n");
+    hole_start_index = to_be_released + blocks[to_be_released-1] -2;
+    blocks[hole_start_index] = blocks[to_be_released + (blocks[to_be_released] + 1)] =  blocks[hole_start_index] - blocks[to_be_released] - 2;
+  }
+  else if(blocks[to_be_released + (blocks[to_be_released] + 2)] < 0)
+  {
+    printf("Right Hole (CASE 2)\n");
+  }
+  else
+  {
+    printf("Both Blocks (CASE 1)\n");
+    hole_start_index = to_be_released;
+    blocks[hole_start_index] = -1 * (blocks[to_be_released] + 2); //start
+    blocks[hole_start_index + (-1*blocks[to_be_released]) - 1] = blocks[hole_start_index]; //end
+      int negCount = 0, indexciesToNextHole = 0;
+      while (negCount < 3){
+        if (blocks[hole_start_index + indexciesToNextHole] < 0)
+          negCount++;
+        indexciesToNextHole++;//indexciesToNextHole = 11 (CASE 1)
+        } 
+    blocks[hole_start_index + 1] = blocks[hole_start_index + indexciesToNextHole]; //prev
+    int next_hole_prev_index = hole_start_index + indexciesToNextHole;
+    
+      negCount = 0;
+      int indexciesToPrevHole = 0;
+      while (negCount < 2){
+        if (blocks[hole_start_index - indexciesToPrevHole] < 0)
+          negCount++;
+        indexciesToPrevHole--;//indexciesToPrevHole = -6 (CASE 1)
+        } 
+    blocks[hole_start_index + 2] = blocks[hole_start_index + indexciesToPrevHole + 1 + (blocks[hole_start_index + indexciesToPrevHole + 1])]; //next
+    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (blocks[hole_start_index +  indexciesToPrevHole + 1]);
+    blocks[next_hole_prev_index] = hole_start_index; //next hole previous 
+    blocks[prev_hole_next_index] = hole_start_index; //previous hole next
+  }
+  //Here (STOP)
   //remove an integer at index to_be_released from blocks array...
   blocks[to_be_released] = blocks[(*block_count)-1];
   (*block_count)--;
