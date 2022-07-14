@@ -133,12 +133,12 @@ void release(int* blocks, int* block_count, int* mem){
     //Clearing previous block and hole data
     int initial_block_size = blocks[to_be_released];
     //printf("initial block size %d\n", initial_block_size);
-    //blocks[to_be_released] = 1;
-    //blocks[to_be_released-1] = 1;
-    //blocks[to_be_released + initial_block_size + 1] = 1;
-    //blocks[to_be_released + initial_block_size + 2] = 1;
-    //blocks[to_be_released + initial_block_size + 3] = 1;
-    //blocks[to_be_released + initial_block_size + 4] = 1;  
+    blocks[to_be_released] = 0;
+    blocks[to_be_released-1] = 0;
+    blocks[to_be_released + initial_block_size + 1] = 0;
+    blocks[to_be_released + initial_block_size + 2] = 0;
+    blocks[to_be_released + initial_block_size + 3] = 0;
+    blocks[to_be_released + initial_block_size + 4] = 0;  
   }
   else if(blocks[to_be_released-1] < 0)
   {
