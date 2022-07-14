@@ -24,7 +24,7 @@ jobs:
     
     - name: Testing with Set 1 parameters
       if: always()
-      run: ./main -x 1000 -n 16777216 -d 1048576 -v 262144
+      run: ./main -x1000 -n16777216 -d1048576 -v262144
       
     - name: Testing with Set 2 parameters
       if: always()
