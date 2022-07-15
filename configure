@@ -1,2 +1,2 @@
 all: main
-    cmake *.c main
+    cmake *.c
