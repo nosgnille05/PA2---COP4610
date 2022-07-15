@@ -1,6 +1,6 @@
 # PA2---COP4610
 Compare the performance of the memory allocation strategies first-fit, next-fit, best-fit, worst-fit.
-- Github: UPDATE HERE
+- Github: https://github.com/nosgnille05/PA2---COP4610
 
 # Group members with panther IDs:
 
