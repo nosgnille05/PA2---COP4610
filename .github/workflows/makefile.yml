@@ -3,14 +3,13 @@ name: Automatic Unit Testing
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 jobs:
   test:
 
     runs-on: ubuntu-latest
+    permissions: read-all|write-all
 
     steps:
     - uses: actions/checkout@v3
