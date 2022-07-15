@@ -21,7 +21,7 @@ Compare the performance of the memory allocation strategies first-fit, next-fit,
 # Meeting Dates:
 
 ---
-1. 7/10/2022 @ 3:00PM-4:00PM Est (1 hour) (Assigning Tasks)
+1. 7/8/2022 @ 3:00PM-4:00PM Est (1 hour) (Assigning Tasks)
 2. 7/13/2022 @ 1:00PM-2:00PM Est (1 hour) (Polishing and bug fixing)
   
   
