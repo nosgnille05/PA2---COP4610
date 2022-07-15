@@ -28,20 +28,25 @@ jobs:
       
     - name: Quick check
       if: always()
+      shell: bash
       run: ./main -x 100 -n 100 -d 100 -v 100
     
     - name: Testing with Set 1 parameters
       if: always()
+      shell: bash
       run: ./main -x 1000 -n 16777216 -d 1048576 -v 262144
       
     - name: Testing with Set 2 parameters
       if: always()
+      shell: bash
       run: ./main -x 1000 -n 16777216 -d 4194304 -v 1363148.8
       
     - name: Testing with Set 3 parameters
       if: always()
+      shell: bash
       run: ./main -x 5000 -n 1073741824 -d 1048576 -v 262144
       
     - name: Testing with Set 4 parameters
       if: always()
+      shell: bash
       run: ./main -x 500 -n 1073741824 -d 268435456 -v 67108864
