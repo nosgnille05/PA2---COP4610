@@ -3,13 +3,20 @@ name: Automatic Unit Testing
 on:
   workflow_dispatch:
   push:
+    branches:
+    - main
+    - 'main/*'
   pull_request:
+    branches:
+    - main
+    - 'main/*'
 
 jobs:
   test:
 
     runs-on: ubuntu-latest
-    permissions: read-all|write-all
+    permissions: 
+      actions: read|write|none
 
     steps:
     - uses: actions/checkout@v3
