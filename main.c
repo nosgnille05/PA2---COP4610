@@ -6,7 +6,7 @@
 #define frand() (rand()/(double)RAND_MAX)
 #define nrand() (sqrt(-2*log(frand()))*cos(2*M_PI*frand()))
 double avg_utilization = 0;
-int number_of_examined_holes = 0;
+double number_of_examined_holes = 0;
 int head = 0;//head of the linked list of holes
 int current_hole = 0;
 void initialize(int n, int d, int v, int** mem, int**blocks){
@@ -113,6 +113,47 @@ int request_first_fit(int* blocks, int* block_count, int* mem, int d, double v, 
   (*block_count)++;
   return 1;//successful
 }
+int request_next_fit(int* blocks, int* block_count, int* mem, int d, double v, int n){
+  if(head == -1)//no hole is found!
+    return 0;
+  int size = nrand_gen(d, v, n);
+  int iterator = head, pred, succ, new_size, block_address;
+  iterator = current_hole; // Setting the iterator to the hole we last allocated.
+  while(size > -mem[iterator]){
+    number_of_examined_holes++;
+    iterator = mem[iterator + 2];//iterator = iterator->next
+    if(head == iterator)
+      return 0;//unsuccessful
+  }
+  if(abs(size+mem[iterator]) <= 4){//fill completely
+    //request size is almost equal to the hole size
+    size = -mem[iterator];//block fills hole completely
+    mem[iterator] = mem[iterator + size + 1] = size;
+    //delete the current hole since it is full now
+    pred = mem[iterator+1];
+    succ = mem[iterator+2];
+    if (pred == iterator)//current hole is the only hole
+      head = -1;
+    else{
+      mem[pred+2] = succ;//current->prev->next = current->next
+      mem[succ+1] = pred;//current->next->prev = current->prev 
+    }
+    block_address = iterator;
+  }else{//fill partially
+    mem[iterator] += (size+2);
+    //adding pos by neg to make it less negative
+    new_size = -mem[iterator];
+    mem[iterator + new_size + 1] = mem[iterator];
+    //block starts at iterator + new_size + 2
+    block_address = iterator + new_size + 2;
+    mem[block_address] = 
+      mem[block_address + size + 1] = size;
+  }
+  blocks[*block_count] = block_address;
+  current_hole = iterator; //saving last allocated hole index.
+  (*block_count)++;
+  return 1;//successful
+}
 void release(int* blocks, int* block_count, int* mem){
   if(!*block_count)
     return;
@@ -161,29 +202,29 @@ void release(int* blocks, int* block_count, int* mem){
   else
   {
     printf("Both Blocks (CASE 1)\n");
-    hole_start_index = to_be_released;
-    blocks[hole_start_index] = -1 * (blocks[to_be_released] + 2); //start
-    blocks[hole_start_index + (-1*blocks[to_be_released]) - 1] = blocks[hole_start_index]; //end
-      int negCount = 0, indexciesToNextHole = 0;
-      while (negCount < 3){
-        if (blocks[hole_start_index + indexciesToNextHole] < 0)
-          negCount++;
-        indexciesToNextHole++;//indexciesToNextHole = 11 (CASE 1)
-        } 
-    blocks[hole_start_index + 1] = blocks[hole_start_index + indexciesToNextHole]; //prev
-    int next_hole_prev_index = hole_start_index + indexciesToNextHole;
+    // hole_start_index = to_be_released;
+    // blocks[hole_start_index] = -1 * (blocks[to_be_released] + 2); //start
+    // blocks[hole_start_index + (-1*blocks[to_be_released]) - 1] = blocks[hole_start_index]; //end
+    //   int negCount = 0, indexciesToNextHole = 0;
+    //   while (negCount < 3){
+    //     if (blocks[hole_start_index + indexciesToNextHole] < 0)
+    //       negCount++;
+    //     indexciesToNextHole++;//indexciesToNextHole = 11 (CASE 1)
+    //     } 
+    // blocks[hole_start_index + 1] = blocks[hole_start_index + indexciesToNextHole]; //prev
+    // int next_hole_prev_index = hole_start_index + indexciesToNextHole;
     
-      negCount = 0;
-      int indexciesToPrevHole = 0;
-      while (negCount < 2){
-        if (blocks[hole_start_index - indexciesToPrevHole] < 0)
-          negCount++;
-        indexciesToPrevHole--;//indexciesToPrevHole = -6 (CASE 1)
-        } 
-    blocks[hole_start_index + 2] = blocks[hole_start_index + indexciesToPrevHole + 1 + (blocks[hole_start_index + indexciesToPrevHole + 1])]; //next
-    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (blocks[hole_start_index +  indexciesToPrevHole + 1]);
-    blocks[next_hole_prev_index] = hole_start_index; //next hole previous 
-    blocks[prev_hole_next_index] = hole_start_index; //previous hole next
+    //   negCount = 0;
+    //   int indexciesToPrevHole = 0;
+    //   while (negCount < 2){
+    //     if (blocks[hole_start_index - indexciesToPrevHole] < 0)
+    //       negCount++;
+    //     indexciesToPrevHole--;//indexciesToPrevHole = -6 (CASE 1)
+    //     } 
+    // blocks[hole_start_index + 2] = blocks[hole_start_index + indexciesToPrevHole + 1 + (blocks[hole_start_index + indexciesToPrevHole + 1])]; //next
+    // int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (blocks[hole_start_index +  indexciesToPrevHole + 1]);
+    // blocks[next_hole_prev_index] = hole_start_index; //next hole previous 
+    // blocks[prev_hole_next_index] = hole_start_index; //previous hole next
   }
   //Here (STOP)
   //remove an integer at index to_be_released from blocks array...
@@ -227,10 +268,11 @@ int main(int argc, char** argv) {
   int block_count = 0;
   printf("Running the simulation with x=%d n=%d d=%d v=%.2f\n", x,n,d,v);
   initialize(n, d, v, &mem, &blocks);
+  int originalX = x;
   while(x > 0){
     x--;
-    while(request_first_fit(blocks, &block_count, mem, d, v, n));
-    update_memory_utilization(blocks, block_count, mem, n, x);
+    while(request_next_fit(blocks, &block_count, mem, d, v, n));
+    update_memory_utilization(blocks, block_count, mem, n, originalX);
     release(blocks,&block_count,mem);
   }
   printf("avg utilization is %.3f", avg_utilization);
