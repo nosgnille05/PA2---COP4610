@@ -200,9 +200,9 @@ void release(int* blocks, int* block_count, int* mem){
   else
   {
     printf("Both Blocks (CASE 1)\n");
-    hole_start_index = to_be_released; //start index of the block to be released set to the start of the new hole
-    blocks[hole_start_index] = -1 * (blocks[to_be_released] + 2); //set the start value of the new hole
-    blocks[hole_start_index + (-1*blocks[to_be_released]) - 1] = blocks[hole_start_index]; //set the end value of the new hole
+    hole_start_index = to_be_released; //start index of releasing bloack set to the start index of new hole
+    blocks[hole_start_index] = -1 * (blocks[to_be_released]); //set start value of the new hole
+    blocks[hole_start_index + (-1*blocks[to_be_released]) + 1] = blocks[hole_start_index]; //set end value of the new hole
       int negCount = 0, indexciesToNextHole = 0;
       while (negCount < 3){
         if (blocks[hole_start_index + indexciesToNextHole] < 0)
@@ -211,21 +211,18 @@ void release(int* blocks, int* block_count, int* mem){
         } 
     blocks[hole_start_index + 1] = blocks[hole_start_index + indexciesToNextHole]; //set the new holes PREVIOUS controller
     int next_hole_prev_index = hole_start_index + indexciesToNextHole;
-    negCount = 0;
-    int indexciesToPrevHole = 0;
-    while (negCount < 2){
-      if (blocks[hole_start_index - indexciesToPrevHole] < 0)
-        negCount++;
+      negCount = 0;
+      int indexciesToPrevHole = 0;
+      while (negCount < 2){
+        if (blocks[hole_start_index + indexciesToPrevHole] < 0)
+          negCount++;
         indexciesToPrevHole--;
         } 
-    blocks[hole_start_index + 2] = blocks[hole_start_index + indexciesToPrevHole + 1 + (blocks[hole_start_index + indexciesToPrevHole + 1])]; //set the new holes NEXT controller
-    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (blocks[hole_start_index +  indexciesToPrevHole + 1]);
-    blocks[next_hole_prev_index] = hole_start_index; //set the next holes previous hole controller 
-    blocks[prev_hole_next_index] = hole_start_index; //set the previous holes next hole controller
+    blocks[hole_start_index + 2] = hole_start_index + indexciesToNextHole - 1;//
+    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (blocks[hole_start_index +  indexciesToPrevHole + 1]); //set the new holes NEXT controller
+    blocks[next_hole_prev_index] = hole_start_index; //set the next holes PREVIOUS hole controller
+    blocks[prev_hole_next_index] = hole_start_index; //set the Previous holes NEXT hole controller
   }
-  //remove an integer at index to_be_released from blocks array...
-  blocks[to_be_released] = blocks[(*block_count)-1];
-  (*block_count)--;
 }
 void update_memory_utilization(int* blocks, int block_count, int* mem, int n, int x){
   double utilization = 0;
