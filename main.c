@@ -223,6 +223,9 @@ void release(int* blocks, int* block_count, int* mem){
     blocks[next_hole_prev_index] = hole_start_index; //set the next holes PREVIOUS hole controller
     blocks[prev_hole_next_index] = hole_start_index; //set the Previous holes NEXT hole controller
   }
+  //remove an integer at index to_be_released from blocks array...
+  blocks[to_be_released] = blocks[(*block_count)-1];
+  (*block_count)--;
 }
 void update_memory_utilization(int* blocks, int block_count, int* mem, int n, int x){
   double utilization = 0;
