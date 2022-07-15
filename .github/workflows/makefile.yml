@@ -25,6 +25,10 @@ jobs:
     - name: Listing if file compiled correctly
       if: always()
       run: dir
+      
+    - name: Quick check
+      if: always()
+      run: ./main -x 100 -n 100 -d 100 -v 100
     
     - name: Testing with Set 1 parameters
       if: always()
