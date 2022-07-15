@@ -15,8 +15,6 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
-    permissions: 
-      actions: read|write|none
 
     steps:
     - uses: actions/checkout@v3
