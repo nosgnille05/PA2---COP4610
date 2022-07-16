@@ -160,7 +160,7 @@ void release(int* blocks, int* block_count, int* mem){
   int to_be_released = rand()%(*block_count);
   printf("releasing block at location (address) %d\n", blocks[to_be_released]);
   int hole_start_index;
-  if((mem[to_be_released-1]) < 0 && mem[to_be_released + (mem[to_be_released] + 2)] < 0)  {
+  if((mem[blocks[to_be_released]-1]) < 0 && mem[to_be_released + (mem[blocks[to_be_released]] + 2)] < 0)  {
     printf("Left & Right Holes (CASE 4)\n");
     hole_start_index = to_be_released + mem[to_be_released-1]-2;//index 5
     mem[hole_start_index] = -1 * (mem[to_be_released] + 2 + (-1*(mem[to_be_released-1]-1)) + (-1*(mem[to_be_released + (mem[to_be_released] + 2)]-1))); //start
@@ -180,27 +180,27 @@ void release(int* blocks, int* block_count, int* mem){
     mem[to_be_released + initial_block_size + 3] = 0;
     mem[to_be_released + initial_block_size + 4] = 0;  
   }
-  else if(mem[to_be_released-1] < 0)
+  else if(mem[blocks[to_be_released]-1] < 0)
   {
     printf("Left Hole (CASE 3)\n");
     hole_start_index = to_be_released + mem[to_be_released-1] -2;
     mem[hole_start_index] = mem[to_be_released + (mem[to_be_released] + 1)] =  mem[hole_start_index] - mem[to_be_released] - 2;
-    mem[to_be_released] = 0;
+    mem[to_be_released] = 0;  
     mem[to_be_released-1] = 0;
   }
-  else if(mem[to_be_released + (mem[to_be_released] + 2)] < 0)
+  else if(mem[to_be_released + (mem[blocks[to_be_released]] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
-    hole_start_index = block_start_index + memory[block_start_index] + 2; // Grab the index of the hole
-    memory[block_start_index+ (memory[block_start_index] + 1)] = 0; // remove the right size delimiter from the block
-    memory[block_start_index] = memory[hole_start_index] - memory[block_start_index] - 2; //Resize left block size with plus the hole size
-    memory[hole_start_index + -memory[hole_start_index]+1] = memory[block_start_index]; // replace the right size delimiter from the hole with block size+hole size
-    memory[hole_start_index] = 0; // remove the left size delimiter from the old hole
-    memory[block_start_index+1] = memory[hole_start_index+1]; // replace Next control point of blocke with hole control point
-    memory[block_start_index+2] = memory[hole_start_index+2]; // replace Right control point of block with hole control point
-    memory[hole_start_index+1] = 0; // Clear old next and previous control point of hole
-    memory[hole_start_index+2] = 0; // Clear old next and previous control point of hole
-    memory[memory[block_start_index+1]+2] = block_start_index; // replace Next control point of left hole to the index of the new hole.
+    hole_start_index = to_be_released + mem[to_be_released] + 2; // Grab the index of the hole
+    mem[to_be_released+ (mem[to_be_released] + 1)] = 0; // remove the right size delimiter from the block
+    mem[to_be_released] = mem[hole_start_index] - mem[to_be_released] - 2; //Resize left block size with plus the hole size
+    mem[hole_start_index + -mem[hole_start_index]+1] = mem[to_be_released]; // replace the right size delimiter from the hole with block size+hole size
+    mem[hole_start_index] = 0; // remove the left size delimiter from the old hole
+    mem[to_be_released+1] = mem[hole_start_index+1]; // replace Next control point of blocke with hole control point
+    mem[to_be_released+2] = mem[hole_start_index+2]; // replace Right control point of block with hole control point
+    mem[hole_start_index+1] = 0; // Clear old next and previous control point of hole
+    mem[hole_start_index+2] = 0; // Clear old next and previous control point of hole
+    mem[mem[to_be_released+1]+2] = to_be_released; // replace Next control point of left hole to the index of the new hole.
   }
   else
   {
