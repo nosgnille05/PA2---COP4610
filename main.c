@@ -191,20 +191,23 @@ void release(int* blocks, int* block_count, int* mem){
   else if(mem[to_be_released + (mem[to_be_released] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
-    hole_start_index = to_be_released + mem[to_be_released] + 2; // Grab the index of the hole
-    mem[to_be_released+ (mem[to_be_released] + 1)] = 0; // remove the right size delimiter from the block
-    mem[to_be_released] = mem[hole_start_index] - mem[to_be_released] - 2; //Resize left block size with plus the hole size
-    mem[hole_start_index + -mem[hole_start_index]+1] = mem[to_be_released]; // replace the right size delimiter from the hole with block size+hole size
-    mem[hole_start_index] = 0; // remove the left size delimiter from the old hole
-    mem[to_be_released+1] = mem[hole_start_index+1]; // replace Next control point of block of hole with hole control point
-    mem[to_be_released+2] = mem[hole_start_index+2]; // replace Right control point of block of hole with hole control point
+    hole_start_index = block_start_index + memory[block_start_index] + 2; // Grab the index of the hole
+    memory[block_start_index+ (memory[block_start_index] + 1)] = 0; // remove the right size delimiter from the block
+    memory[block_start_index] = memory[hole_start_index] - memory[block_start_index] - 2; //Resize left block size with plus the hole size
+    memory[hole_start_index + -memory[hole_start_index]+1] = memory[block_start_index]; // replace the right size delimiter from the hole with block size+hole size
+    memory[hole_start_index] = 0; // remove the left size delimiter from the old hole
+    memory[block_start_index+1] = memory[hole_start_index+1]; // replace Next control point of blocke with hole control point
+    memory[block_start_index+2] = memory[hole_start_index+2]; // replace Right control point of block with hole control point
+    memory[hole_start_index+1] = 0; // Clear old next and previous control point of hole
+    memory[hole_start_index+2] = 0; // Clear old next and previous control point of hole
+    memory[memory[block_start_index+1]+2] = block_start_index; // replace Next control point of left hole to the index of the new hole.
   }
   else
   {
     printf("Both Blocks (CASE 1)\n");
-    hole_start_index = to_be_released; //start index of releasing bloack set to the start index of new hole
-    mem[hole_start_index] = -1 * (mem[to_be_released]); //set start value of the new hole
-    mem[hole_start_index + (-1*mem[to_be_released]) + 1] = mem[hole_start_index]; //set end value of the new hole
+    hole_start_index = mem[to_be_released]; //start index of releasing bloack set to the start index of new hole
+    mem[to_be_released] = -(mem[to_be_released]); //set start value of the new hole
+    mem[hole_start_index + -(mem[to_be_released]) + 1] = mem[hole_start_index]; //set end value of the new hole
       int negCount = 0, indexciesToNextHole = 0;
       while (negCount < 3){
         if (mem[hole_start_index + indexciesToNextHole] < 0)
