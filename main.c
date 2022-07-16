@@ -160,7 +160,7 @@ void release(int* blocks, int* block_count, int* mem){
   int to_be_released = rand()%(*block_count);
   printf("releasing block at location (address) %d\n", blocks[to_be_released]);
   int hole_start_index;
-  if((mem[to_be_released-1]) < 0 && mem[to_be_released + (mem[to_be_released] + 2)] < 0)  {
+  if((mem[blocks[to_be_released]-1]) < 0 && mem[to_be_released + (mem[blocks[to_be_released]] + 2)] < 0)  {
     printf("Left & Right Holes (CASE 4)\n");
     hole_start_index = to_be_released + mem[to_be_released-1]-2; //set the starting index of the new hole
     mem[hole_start_index] = -1 * (mem[to_be_released] + 2 + (-1*(mem[to_be_released-1]-1)) + (-1*(mem[to_be_released + (mem[to_be_released] + 2)]-1))); //set start value of the new hole (-hole length)
@@ -186,15 +186,15 @@ void release(int* blocks, int* block_count, int* mem){
     mem[to_be_released + initial_block_size + 3] = 0;
     mem[to_be_released + initial_block_size + 4] = 0; 
   }
-  else if(mem[to_be_released-1] < 0)
+  else if(mem[blocks[to_be_released]-1] < 0)
   {
     printf("Left Hole (CASE 3)\n");
     hole_start_index = to_be_released + mem[to_be_released-1] -2;
     mem[hole_start_index] = mem[to_be_released + (mem[to_be_released] + 1)] =  mem[hole_start_index] - mem[to_be_released] - 2;
-    mem[to_be_released] = 0;
+    mem[to_be_released] = 0;  
     mem[to_be_released-1] = 0;
   }
-  else if(mem[to_be_released + (mem[to_be_released] + 2)] < 0)
+  else if(mem[to_be_released + (mem[blocks[to_be_released]] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
     hole_start_index = to_be_released + mem[to_be_released] + 2; // Grab the index of the hole
