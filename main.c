@@ -261,45 +261,102 @@ void release(int* blocks, int* block_count, int* mem){
   else
   {
     printf("Both Blocks (CASE 1)\n");
-     hole_start_index = blocks[to_be_released]; //start index of releasing block set to the start index of new hole
+    int memSize = sizeof(mem)/sizeof(mem[0]);
+    int prev_hole_next_index;
+    hole_start_index = blocks[to_be_released]; //start index of releasing block set to the start index of new hole
     mem[hole_start_index] = (-1*mem[blocks[to_be_released]]); //set start value of the new hole
     mem[hole_start_index + (-1*mem[hole_start_index]) + 1] = mem[hole_start_index]; //set end value of the new hole
-      int negCountCase1 = 0, indexciesToNextHoleCase1 = 0, lookingFromLeft = 0, lookingFromRight = 0;
-      int maxLookRight = 0;
-      while (negCountCase1 < 3){
-        maxLookRight++;
-        if(maxLookRight == 3){
-          while(mem[lookingFromLeft] >= 0)
-            lookingFromLeft++;
-        }
-        if (mem[hole_start_index + indexciesToNextHoleCase1] < 0)
-          negCountCase1++;
-          indexciesToNextHoleCase1++;
+    int leftWrap= 0;
+    int rightWrap = 0;
+    int indexciesToNextHoleCase1 = 0, lookingFromLeftToRight = 0, lookingFromRightToLeft = 0;
+    int indexciesToPrevHole = 0;
+    int rightHoleCheck = 0;
+    int leftHoleCheck = 0;
+    int mAxLookRight = 0;
+    int negCountRightW = 0;
+    int negCountLeftW = 0;
+    
+      while(rightHoleCheck < 3){ //<>check for hole at right
+        if (mem[blocks[to_be_released] + indexciesToNextHoleCase1] < 0 && (blocks[to_be_released] + indexciesToNextHoleCase1) < memSize) 
+          rightHoleCheck++; //<># negatives
+        else if (blocks[to_be_released] + indexciesToNextHoleCase1 >= memSize){
+          rightWrap = 1; //<>we reached end of mem, right wrap
+          rightHoleCheck = 3;
+          }
+          indexciesToNextHoleCase1++; //<>total # of iterations                            
         } 
-    int next_hole_prev_index = hole_start_index + indexciesToNextHoleCase1;
-      negCountCase1 = 0;
-      int indexciesToPrevHole = 0;
-      int maxLookLeft = 0;
-      while (negCountCase1 < 2){
-        maxLookLeft++;
-        if(maxLookLeft == 2){
-          while(mem[lookingFromRight] >= 0)
-            lookingFromRight++;
+        if(rightWrap == 1)  //<>if no right hole present, right wrap
+        {
+          printf("Right Wrap\n");
+          //<>wrap right for NEXT hole
+          while(mem[lookingFromLeftToRight] >= 0){ //go to the beginning of mem, mem[0] and look left to right until negative is found
+            lookingFromLeftToRight++; //this is our new holes NEXT controller
+            }
+          //<>normal PREVIOUS hole
+          while (negCountRightW < 2){ //look to left for previous hole
+            if (mem[blocks[to_be_released] + indexciesToPrevHole] < 0)
+              negCountRightW++;
+            indexciesToPrevHole--;
+          }
+          mem[blocks[to_be_released] + 1] = hole_start_index + indexciesToPrevHole + mem[hole_start_index + indexciesToPrevHole+1]; //set the new holes PREVIOUS controller
+          mem[blocks[to_be_released] + 2] = lookingFromLeftToRight; //set the new holes NEXT controller (wrapped)
+          mem[lookingFromLeftToRight + 1] = blocks[to_be_released]; //set the next holes PREVIOUS controller (wrapped)
+          prev_hole_next_index = blocks[to_be_released] + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]);
+          //printf("PrevHoleNextI %d\n", prev_hole_next_index);
+          mem[prev_hole_next_index] = blocks[to_be_released]; //set the value of the previous holes NEXT controller
         }
-        if (mem[hole_start_index + indexciesToPrevHole] < 0)
-          negCountCase1++;
-        indexciesToPrevHole--;
-        } 
-    if (lookingFromLeft == 0)
-      mem[hole_start_index + 2] = hole_start_index + indexciesToNextHoleCase1 - 1; //set the new holes NEXT controller
-    else{
-      mem[hole_start_index + 2] = lookingFromLeft; //set the new holes NEXT controller
-      mem[lookingFromLeft + 1] = blocks[to_be_released];
-      }
-      mem[hole_start_index + 1] = hole_start_index + indexciesToPrevHole + mem[hole_start_index + indexciesToPrevHole+1]; //set the new holes NEXT controller
-    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]);
+        else{//<>right hole present
+            //<>normal NEXT hole
+            indexciesToNextHoleCase1 = 0;
+            while (negCountLeftW < 3){ //look to right for next hole
+              if (mem[blocks[to_be_released] + indexciesToNextHoleCase1] < 0) //looks from hole start index until next hole start index
+                negCountLeftW++;
+                indexciesToNextHoleCase1++; //stores # of indexcies to next hole
+              } 
+            mem[blocks[to_be_released] + 2] = blocks[to_be_released] + indexciesToNextHoleCase1 - 1; //set the new holes NEXT controller
+            while(leftHoleCheck < 2){ //<>check for hole at left
+              //printf("BI %d\n", blocks[to_be_released] + indexciesToPrevHole);
+              if (mem[blocks[to_be_released] + indexciesToPrevHole] < 0 && blocks[to_be_released] + indexciesToPrevHole >= 0)
+                leftHoleCheck++; //# negatives
+              else if (blocks[to_be_released] + indexciesToPrevHole < 0){
+                leftWrap = 1; //<>we reached the beginning of mem, left wrap
+                leftHoleCheck = 2;
+                }
+                indexciesToPrevHole--; //<>total # of iterations
+              } 
+              if(leftWrap == 1)  //<>if no left hole present
+              {
+                printf("Left Wrap\n");
+                 //<>wrap left for PREVIOUS hole
+                 while(mem[memSize+lookingFromRightToLeft-1] >= 0){ //go to the end of mem, mem[length-1] and look right to left until negative found
+                  lookingFromRightToLeft--; //decrease lookingFromRightToLeft while negative (hole) not found
+                }
+                mem[blocks[to_be_released] + indexciesToNextHoleCase1] = blocks[to_be_released]; //set the next holes PREVIOUS controller (wrapped)
+                mem[blocks[to_be_released] + 1] = (memSize-1) + (lookingFromRightToLeft + mem[memSize+lookingFromRightToLeft-1] - 1); //set the new holes PREVIOUS controller (wrapped)
+                prev_hole_next_index = (memSize-1) + (lookingFromRightToLeft + mem[memSize+lookingFromRightToLeft-1] - 1)+2;//hole_start_index + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]);
+                mem[prev_hole_next_index] = blocks[to_be_released]; //set the previous holes NEXT controller
+              }
+              else //left hole present
+              {
+                printf("Simple Case\n");
+                //<>normal PREVIOUS hole
+                indexciesToPrevHole = 0;
+                while (negCountRightW < 2){ //look to left for previous hole
+                  if (mem[blocks[to_be_released] + indexciesToPrevHole] < 0)
+                    negCountRightW++;
+                    indexciesToPrevHole--;
+                }
+                mem[blocks[to_be_released] + 1] = blocks[to_be_released] + indexciesToPrevHole + mem[hole_start_index + indexciesToPrevHole+1];//set the new holes PREVIOUS controller
+                mem[blocks[to_be_released] + indexciesToNextHoleCase1] = blocks[to_be_released]; //set the next holes PREVIOUS controller
+                prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]);
+                mem[prev_hole_next_index] = blocks[to_be_released]; //set the previous holes NEXT controller
+              }
+            }
+    }//END Case 1
+  //remove an integer at index to_be_released from blocks array...
+  blocks[to_be_released] = blocks[(*block_count)-1];
+  (*block_count)--;
   }
-}
 void update_memory_utilization(int* blocks, int block_count, int* mem, int n, int x){
   double utilization = 0;
   for(int i = 0;i < block_count;i++)
