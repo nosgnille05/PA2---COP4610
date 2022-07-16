@@ -212,9 +212,9 @@ void release(int* blocks, int* block_count, int* mem){
   int hole_start_index;
   if((mem[blocks[to_be_released]-1]) < 0 && mem[blocks[to_be_released] + (mem[blocks[to_be_released]] + 2)] < 0)  {
     printf("Left & Right Holes (CASE 4)\n");
-    hole_start_index = to_be_released + mem[to_be_released-1]-2; //set the starting index of the new hole
-    mem[hole_start_index] = -1 * (mem[to_be_released] + 2 + (-1*(mem[to_be_released-1]-1)) + (-1*(mem[to_be_released + (mem[to_be_released] + 2)]-1))); //set start value of the new hole (-hole length)
-    int hole_end_index = to_be_released + (mem[to_be_released]+2) + (-1*(mem[to_be_released-1]-2)); 
+    hole_start_index = blocks[to_be_released] + mem[blocks[to_be_released]-1]-2; //set the starting index of the new hole
+    mem[hole_start_index] = -1 * (mem[blocks[to_be_released]] + 2 + (-1*(mem[blocks[to_be_released]-1]-1)) + (-1*(mem[blocks[to_be_released] + (mem[blocks[to_be_released]] + 2)]-1))); //set start value of the new hole (-hole length)
+    int hole_end_index = blocks[to_be_released] + (mem[blocks[to_be_released]]+2) + (-1*(mem[blocks[to_be_released]-1]-2)); 
     int initial_end_hole_index = mem[hole_end_index]; //calculates the end index of the new hole
     mem[hole_end_index] = mem[hole_start_index]; //sets the end index of the new hole to (-hole length)
     mem[hole_start_index + 2] = mem[hole_end_index + initial_end_hole_index +1]; //set the new holes NEXT controller
@@ -228,13 +228,13 @@ void release(int* blocks, int* block_count, int* mem){
     int next_hole_prev_index = hole_start_index + indexciesToNextHole;
     mem[next_hole_prev_index] = hole_start_index; //set the next holes PREVIOUS hole controller
     //Clearing previous block and hole data
-    int initial_block_size = mem[to_be_released];
-    mem[to_be_released] = 0;
-    mem[to_be_released-1] = 0;
-    mem[to_be_released + initial_block_size + 1] = 0;
-    mem[to_be_released + initial_block_size + 2] = 0;
-    mem[to_be_released + initial_block_size + 3] = 0;
-    mem[to_be_released + initial_block_size + 4] = 0; 
+    int initial_block_size = mem[blocks[to_be_released]];
+    mem[blocks[to_be_released]] = 0;
+    mem[blocks[to_be_released]-1] = 0;
+    mem[blocks[to_be_released] + initial_block_size + 1] = 0;
+    mem[blocks[to_be_released] + initial_block_size + 2] = 0;
+    mem[blocks[to_be_released] + initial_block_size + 3] = 0;
+    mem[blocks[to_be_released] + initial_block_size + 4] = 0; 
   }
   else if(mem[blocks[to_be_released]-1] < 0)
   {
