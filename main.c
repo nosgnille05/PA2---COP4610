@@ -261,32 +261,44 @@ void release(int* blocks, int* block_count, int* mem){
   else
   {
     printf("Both Blocks (CASE 1)\n");
-    hole_start_index = blocks[to_be_released]; //start index of releasing block set to the start index of new hole
-    mem[hole_start_index] = -1 * (mem[blocks[to_be_released]]); //set start value of the new hole
-    mem[hole_start_index + (-1*mem[blocks[to_be_released]]) + 1] = mem[hole_start_index]; //set end value of the new hole
-      int negCountCase1 = 0, indexciesToNextHoleCase1 = 0;
+     hole_start_index = blocks[to_be_released]; //start index of releasing block set to the start index of new hole
+    mem[hole_start_index] = (-1*mem[blocks[to_be_released]]); //set start value of the new hole
+    mem[hole_start_index + (-1*mem[hole_start_index]) + 1] = mem[hole_start_index]; //set end value of the new hole
+      int negCountCase1 = 0, indexciesToNextHoleCase1 = 0, lookingFromLeft = 0, lookingFromRight = 0;
+      int maxLookRight = 0;
       while (negCountCase1 < 3){
+        maxLookRight++;
+        if(maxLookRight == 3){
+          while(mem[lookingFromLeft] >= 0)
+            lookingFromLeft++;
+        }
         if (mem[hole_start_index + indexciesToNextHoleCase1] < 0)
           negCountCase1++;
-        indexciesToNextHoleCase1++;
+          indexciesToNextHoleCase1++;
         } 
-    mem[hole_start_index + 1] = mem[hole_start_index + indexciesToNextHoleCase1]; //set the new holes PREVIOUS controller
     int next_hole_prev_index = hole_start_index + indexciesToNextHoleCase1;
       negCountCase1 = 0;
       int indexciesToPrevHole = 0;
+      int maxLookLeft = 0;
       while (negCountCase1 < 2){
+        maxLookLeft++;
+        if(maxLookLeft == 2){
+          while(mem[lookingFromRight] >= 0)
+            lookingFromRight++;
+        }
         if (mem[hole_start_index + indexciesToPrevHole] < 0)
           negCountCase1++;
         indexciesToPrevHole--;
         } 
-    mem[hole_start_index + 2] = hole_start_index + indexciesToNextHoleCase1 - 1; //set the new holes NEXT controller
+    if (lookingFromLeft == 0)
+      mem[hole_start_index + 2] = hole_start_index + indexciesToNextHoleCase1 - 1; //set the new holes NEXT controller
+    else{
+      mem[hole_start_index + 2] = lookingFromLeft; //set the new holes NEXT controller
+      mem[lookingFromLeft + 1] = blocks[to_be_released];
+      }
+      mem[hole_start_index + 1] = hole_start_index + indexciesToPrevHole + mem[hole_start_index + indexciesToPrevHole+1]; //set the new holes NEXT controller
     int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]);
-    mem[next_hole_prev_index] = hole_start_index; //set the next holes PREVIOUS hole controller
-    mem[prev_hole_next_index] = hole_start_index; //set the Previous holes NEXT hole controller
   }
-  //remove an integer at index to_be_released from blocks array...
-  blocks[to_be_released] = blocks[(*block_count)-1];
-  (*block_count)--;
 }
 void update_memory_utilization(int* blocks, int block_count, int* mem, int n, int x){
   double utilization = 0;
