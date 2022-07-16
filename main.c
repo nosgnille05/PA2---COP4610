@@ -162,23 +162,29 @@ void release(int* blocks, int* block_count, int* mem){
   int hole_start_index;
   if((mem[to_be_released-1]) < 0 && mem[to_be_released + (mem[to_be_released] + 2)] < 0)  {
     printf("Left & Right Holes (CASE 4)\n");
-    hole_start_index = to_be_released + mem[to_be_released-1]-2;//index 5
-    mem[hole_start_index] = -1 * (mem[to_be_released] + 2 + (-1*(mem[to_be_released-1]-1)) + (-1*(mem[to_be_released + (mem[to_be_released] + 2)]-1))); //start
-    int hole_end_index = to_be_released + (mem[to_be_released]+2) + (-1*(mem[to_be_released-1]-2)-1); 
-    int initial_end_hole_index = mem[hole_end_index];
-    
-    mem[hole_end_index] = mem[hole_start_index]; //end
-    mem[hole_start_index + 1] = mem[hole_end_index + initial_end_hole_index]; //prev
-    mem[hole_start_index + 2] = mem[hole_end_index + initial_end_hole_index +1]; //next
+    hole_start_index = to_be_released + mem[to_be_released-1]-2; //set the starting index of the new hole
+    mem[hole_start_index] = -1 * (mem[to_be_released] + 2 + (-1*(mem[to_be_released-1]-1)) + (-1*(mem[to_be_released + (mem[to_be_released] + 2)]-1))); //set start value of the new hole (-hole length)
+    int hole_end_index = to_be_released + (mem[to_be_released]+2) + (-1*(mem[to_be_released-1]-2)); 
+    int initial_end_hole_index = mem[hole_end_index]; //calculates the end index of the new hole
+    mem[hole_end_index] = mem[hole_start_index]; //sets the end index of the new hole to (-hole length)
+    mem[hole_start_index + 2] = mem[hole_end_index + initial_end_hole_index +1]; //set the new holes NEXT controller
+    int negCount = 0;
+    int indexciesToNextHole = 0;
+      while (negCount < 5){
+        if (mem[hole_start_index + indexciesToNextHole] < 0)
+          negCount++;
+        indexciesToNextHole++;
+        } 
+    int next_hole_prev_index = hole_start_index + indexciesToNextHole;
+    mem[next_hole_prev_index] = hole_start_index; //set the next holes PREVIOUS hole controller
     //Clearing previous block and hole data
     int initial_block_size = mem[to_be_released];
-    //printf("initial block size %d\n", initial_block_size);
     mem[to_be_released] = 0;
     mem[to_be_released-1] = 0;
     mem[to_be_released + initial_block_size + 1] = 0;
     mem[to_be_released + initial_block_size + 2] = 0;
     mem[to_be_released + initial_block_size + 3] = 0;
-    mem[to_be_released + initial_block_size + 4] = 0;  
+    mem[to_be_released + initial_block_size + 4] = 0; 
   }
   else if(mem[to_be_released-1] < 0)
   {
@@ -191,40 +197,40 @@ void release(int* blocks, int* block_count, int* mem){
   else if(mem[to_be_released + (mem[to_be_released] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
-    hole_start_index = block_start_index + memory[block_start_index] + 2; // Grab the index of the hole
-    memory[block_start_index+ (memory[block_start_index] + 1)] = 0; // remove the right size delimiter from the block
-    memory[block_start_index] = memory[hole_start_index] - memory[block_start_index] - 2; //Resize left block size with plus the hole size
-    memory[hole_start_index + -memory[hole_start_index]+1] = memory[block_start_index]; // replace the right size delimiter from the hole with block size+hole size
-    memory[hole_start_index] = 0; // remove the left size delimiter from the old hole
-    memory[block_start_index+1] = memory[hole_start_index+1]; // replace Next control point of blocke with hole control point
-    memory[block_start_index+2] = memory[hole_start_index+2]; // replace Right control point of block with hole control point
-    memory[hole_start_index+1] = 0; // Clear old next and previous control point of hole
-    memory[hole_start_index+2] = 0; // Clear old next and previous control point of hole
-    memory[memory[block_start_index+1]+2] = block_start_index; // replace Next control point of left hole to the index of the new hole.
+    hole_start_index = to_be_released + mem[to_be_released] + 2; // Grab the index of the hole
+    mem[to_be_released+ (mem[to_be_released] + 1)] = 0; // remove the right size delimiter from the block
+    mem[to_be_released] = mem[hole_start_index] - mem[to_be_released] - 2; //Resize left block size with plus the hole size
+    mem[hole_start_index + -mem[hole_start_index]+1] = mem[to_be_released]; // replace the right size delimiter from the hole with block size+hole size
+    mem[hole_start_index] = 0; // remove the left size delimiter from the old hole
+    mem[to_be_released+1] = mem[hole_start_index+1]; // replace Next control point of blocke with hole control point
+    mem[to_be_released+2] = mem[hole_start_index+2]; // replace Right control point of block with hole control point
+    mem[hole_start_index+1] = 0; // Clear old next and previous control point of hole
+    mem[hole_start_index+2] = 0; // Clear old next and previous control point of hole
+    mem[mem[to_be_released+1]+2] = to_be_released; // replace Next control point of left hole to the index of the new hole.
   }
   else
   {
     printf("Both Blocks (CASE 1)\n");
-    hole_start_index = mem[to_be_released]; //start index of releasing bloack set to the start index of new hole
-    mem[to_be_released] = -(mem[to_be_released]); //set start value of the new hole
-    mem[hole_start_index + -(mem[to_be_released]) + 1] = mem[hole_start_index]; //set end value of the new hole
-      int negCount = 0, indexciesToNextHole = 0;
-      while (negCount < 3){
-        if (mem[hole_start_index + indexciesToNextHole] < 0)
-          negCount++;
-        indexciesToNextHole++;
+    hole_start_index = to_be_released; //start index of releasing block set to the start index of new hole
+    mem[hole_start_index] = -1 * (mem[to_be_released]); //set start value of the new hole
+    mem[hole_start_index + (-1*mem[to_be_released]) + 1] = mem[hole_start_index]; //set end value of the new hole
+      int negCountCase1 = 0, indexciesToNextHoleCase1 = 0;
+      while (negCountCase1 < 3){
+        if (mem[hole_start_index + indexciesToNextHoleCase1] < 0)
+          negCountCase1++;
+        indexciesToNextHoleCase1++;
         } 
-    mem[hole_start_index + 1] = mem[hole_start_index + indexciesToNextHole]; //set the new holes PREVIOUS controller
-    int next_hole_prev_index = hole_start_index + indexciesToNextHole;
-      negCount = 0;
+    mem[hole_start_index + 1] = mem[hole_start_index + indexciesToNextHoleCase1]; //set the new holes PREVIOUS controller
+    int next_hole_prev_index = hole_start_index + indexciesToNextHoleCase1;
+      negCountCase1 = 0;
       int indexciesToPrevHole = 0;
-      while (negCount < 2){
+      while (negCountCase1 < 2){
         if (mem[hole_start_index + indexciesToPrevHole] < 0)
-          negCount++;
+          negCountCase1++;
         indexciesToPrevHole--;
         } 
-    mem[hole_start_index + 2] = hole_start_index + indexciesToNextHole - 1;//
-    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]); //set the new holes NEXT controller
+    mem[hole_start_index + 2] = hole_start_index + indexciesToNextHoleCase1 - 1; //set the new holes NEXT controller
+    int prev_hole_next_index = hole_start_index + indexciesToPrevHole + 2 + (mem[hole_start_index +  indexciesToPrevHole + 1]);
     mem[next_hole_prev_index] = hole_start_index; //set the next holes PREVIOUS hole controller
     mem[prev_hole_next_index] = hole_start_index; //set the Previous holes NEXT hole controller
   }
