@@ -191,16 +191,16 @@ void release(int* blocks, int* block_count, int* mem){
   else if(mem[to_be_released + (mem[blocks[to_be_released]] + 2)] < 0)
   {
     printf("Right Hole (CASE 2)\n");
-    hole_start_index = to_be_released + mem[to_be_released] + 2; // Grab the index of the hole
-    mem[to_be_released+ (mem[to_be_released] + 1)] = 0; // remove the right size delimiter from the block
-    mem[to_be_released] = mem[hole_start_index] - mem[to_be_released] - 2; //Resize left block size with plus the hole size
-    mem[hole_start_index + -mem[hole_start_index]+1] = mem[to_be_released]; // replace the right size delimiter from the hole with block size+hole size
+    hole_start_index = blocks[to_be_released] + mem[blocks[to_be_released]] + 2; // Grab the index of the hole
+    mem[blocks[to_be_released] + (mem[blocks[to_be_released]] + 1)] = 0; // remove the right size delimiter from the block
+    mem[blocks[to_be_released]] = mem[hole_start_index] - mem[blocks[to_be_released]] - 2; //Resize left block size with plus the hole size
+    mem[hole_start_index + -mem[hole_start_index]+1] = mem[blocks[to_be_released]]; // replace the right size delimiter from the hole with block size+hole size
     mem[hole_start_index] = 0; // remove the left size delimiter from the old hole
-    mem[to_be_released+1] = mem[hole_start_index+1]; // replace Next control point of blocke with hole control point
-    mem[to_be_released+2] = mem[hole_start_index+2]; // replace Right control point of block with hole control point
+    mem[blocks[to_be_released]+1] = mem[hole_start_index+1]; // replace Next control point of blocke with hole control point
+    mem[blocks[to_be_released]+2] = mem[hole_start_index+2]; // replace Right control point of block with hole control point
     mem[hole_start_index+1] = 0; // Clear old next and previous control point of hole
     mem[hole_start_index+2] = 0; // Clear old next and previous control point of hole
-    mem[mem[to_be_released+1]+2] = to_be_released; // replace Next control point of left hole to the index of the new hole.
+    mem[mem[blocks[to_be_released]+1]+2] = blocks[to_be_released]; // replace Next control point of left hole to the index of the new hole.
   }
   else
   {
