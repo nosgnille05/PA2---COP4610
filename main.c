@@ -377,13 +377,13 @@ int main(int argc, char** argv) {
       x = atoi(*++argv);
       break;
       case 'n':
-      n = atoi(*++argv);
+      n = pow(2,atoi(*++argv));
       break;
       case 'd':
-      d = atoi(*++argv);
+      d = pow(2,atoi(*++argv));
       break;
       case 'v':
-      v = atof(*++argv);
+      v = pow(2,atoi(*++argv));
       break;
       default: //error
       return 1;
