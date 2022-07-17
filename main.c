@@ -401,6 +401,7 @@ int main(int argc, char** argv) {
     update_memory_utilization(blocks, block_count, mem, n, originalX);
     release(blocks,&block_count,mem);
   }
-  printf("avg utilization is %.3f", avg_utilization);
+  printf("avg utilization is %.3f\n", avg_utilization);
+  printf("examined holes are %.3f\n", number_of_examined_holes/originalX);
   return 0;
 }
